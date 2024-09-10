@@ -1,5 +1,7 @@
 from aws_cdk import (
     Stack,
+    Duration,
+    BundlingOptions,
 )
 from aws_cdk import aws_lambda as lambda_
 from aws_cdk import (
@@ -26,4 +28,28 @@ class IssueStack2(Stack):
             ],
             description=f"CDK Signing Config for {Stack.of(self).stack_name}",
             untrusted_artifact_on_deployment=lambda_.UntrustedArtifactOnDeployment.WARN,
+            # Changing untrusted_artifact_on_deployment will cause a deployment error https://github.com/aws/aws-cdk/issues/29474
+            # untrusted_artifact_on_deployment=lambda_.UntrustedArtifactOnDeployment.ENFORCE,
+        )
+
+        lambda_.Function(
+            self,
+            "Error Example Lambda",
+            runtime=lambda_.Runtime.PYTHON_3_12,
+            handler="lambda_function.lambda_handler",
+            code_signing_config=code_signing_config,
+            code=lambda_.Code.from_asset(
+                "lambda/error_example",
+            ),
+            environment={},
+            description="This is an example lambda to show a signing profile failure.",
+            timeout=Duration.seconds(3),
+            memory_size=256,
+            architecture=lambda_.Architecture.X86_64,
+            retry_attempts=0,
+            # logging_format=lambda_.LoggingFormat.JSON,
+            # application_log_level="INFO",
+            tracing=lambda_.Tracing.DISABLED,
+            events=[],
+            initial_policy=[],
         )
