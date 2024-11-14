@@ -1,7 +1,6 @@
 from aws_cdk import (
     Stack,
     Duration,
-    BundlingOptions,
 )
 from aws_cdk import aws_lambda as lambda_
 from aws_cdk import (
@@ -35,7 +34,7 @@ class IssueStack2(Stack):
         lambda_.Function(
             self,
             "Error Example Lambda",
-            runtime=lambda_.Runtime.PYTHON_3_12,
+            runtime=lambda_.Runtime.PYTHON_3_13,
             handler="lambda_function.lambda_handler",
             code_signing_config=code_signing_config,
             code=lambda_.Code.from_asset(
